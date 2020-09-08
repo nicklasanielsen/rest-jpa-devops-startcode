@@ -107,4 +107,16 @@ public class Movie implements Serializable {
         return true;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Movie{id=").append(id);
+        sb.append(", title=").append(title);
+        sb.append(", director=").append(director);
+        sb.append(", runtime=").append(runtime);
+        sb.append(", releaseYear=").append(releaseYear);
+        sb.append('}');
+        return sb.toString();
+    }
+
 }

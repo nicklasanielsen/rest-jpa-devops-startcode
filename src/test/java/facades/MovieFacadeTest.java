@@ -31,6 +31,23 @@ public class MovieFacadeTest {
 
     @AfterAll
     public static void tearDownClass() {
+        EntityManager em = emf.createEntityManager();
+
+        movies.add(new Movie("Iron Man", "Jon Favreau", 126, 2008));
+        movies.add(new Movie("Dum og dummere", "Peter Farrelly", 113, 1994));
+
+        try {
+            em.getTransaction().begin();
+
+            em.createNamedQuery("Movie.deleteAllRows").executeUpdate();
+            em.persist(movies.get(0));
+            em.persist(movies.get(1));
+            
+            em.getTransaction().commit();
+        } finally {
+            em.close();
+        }
+
         emf.close();
     }
 
@@ -40,13 +57,13 @@ public class MovieFacadeTest {
     public void setUp() {
         EntityManager em = emf.createEntityManager();
 
-        movies.add(new Movie("Iron Man", "Jon Favreau", 2008, 126));
-        movies.add(new Movie("Dum og dummere", "Peter Farrelly", 1994, 113));
+        movies.add(new Movie("Iron Man", "Jon Favreau", 126, 2008));
+        movies.add(new Movie("Dum og dummere", "Peter Farrelly", 113, 1994));
 
         try {
             em.getTransaction().begin();
-            em.createNamedQuery("Movie.deleteAllRows").executeUpdate();
 
+            em.createNamedQuery("Movie.deleteAllRows").executeUpdate();
             em.persist(movies.get(0));
             em.persist(movies.get(1));
 
@@ -112,12 +129,12 @@ public class MovieFacadeTest {
     @Test
     public void addMovieTest() {
         // Arrange
-        Movie expected = new Movie("Test", "Chris Mason Johnson", 89, 2013);
-
+        Movie expected = new Movie("Test", "Chris Mason Johnson", 90, 2013);
+        
         // Act
         Movie actual = facade.addMovie(expected.getTitle(), expected.getDirector(), expected.getRuntime(), expected.getReleaseYear());
         expected.setId(actual.getId());
-
+        
         // Assert
         assertEquals(expected, actual);
     }

@@ -1,9 +1,12 @@
 package rest;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import dtos.MovieDTO;
+import entities.Movie;
 import utils.EMF_Creator;
 import facades.MovieFacade;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -20,27 +23,37 @@ public class MovieResource {
     //An alternative way to get the EntityManagerFactory, whithout having to type the details all over the code
     //EMF = EMF_Creator.createEntityManagerFactory(DbSelector.DEV, Strategy.CREATE);
     private static final MovieFacade FACADE = MovieFacade.getMovieFacade(EMF);
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     @Path("count")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String getMovieCount() {
-        throw new UnsupportedOperationException();
+        Long count = FACADE.getMovieCount();
+
+        return "{\"count\":"+count+"}";
     }
 
     @Path("id/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String getMovieByID(@PathParam("id") Long id) {
-        throw new UnsupportedOperationException();
+        Movie movie = FACADE.getMovieByID(id);
+        System.out.println(movie);
+        return new Gson().toJson(movie);
     }
 
     @Path("all")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String getAllMovies() {
-        throw new UnsupportedOperationException();
+        List<Movie> movies = FACADE.getAllMovies();
+        List<MovieDTO> movieDTOs = new ArrayList();
+
+        for (Movie movie : movies) {
+            movieDTOs.add(new MovieDTO(movie));
+        }
+
+        return new Gson().toJson(movieDTOs);
     }
 
 }
